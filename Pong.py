@@ -1,4 +1,4 @@
-#TODO add all object classes, add all object functions, figure out how to put this game all together
+#TODO Fix movement
 #note pygame local docs cmd python -m pygame.docs 
 import pygame
 
@@ -27,7 +27,8 @@ class Paddles:
         # x, y, width, height
          pygame.draw.rect(window, (255, 255, 255), pygame.Rect(self.xcoord, self.ycoord, self.width, self.height))
 
-    def MovePaddle(self, PaddleUp=False, PaddleDown=False):
+    def MovePaddle(self, PaddleUp, PaddleDown):
+        global IsOpen
         # control the paddles
         if PaddleUp:
             self.ycoord += 1
@@ -36,7 +37,7 @@ class Paddles:
         if self.ycoord > ScreenHeight - 50:
             self.ycoord = ScreenHeight - 50
         if self.ycoord < 0:
-                self.ycoord = 0
+            self.ycoord = 0
         
 #create objects
 paddle1 = Paddles(50, 240, 10, 60)
@@ -48,19 +49,21 @@ def Events():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             IsOpen = False
-    
     # control the paddles
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                paddle1.MovePaddle(True)
-            if event.key == pygame.K_DOWN:
                 paddle1.MovePaddle(False, True)
 
+            elif event.key == pygame.K_DOWN:
+                paddle1.MovePaddle(True, False)
+
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_UP :
-                paddle1.MovePaddle()
-            if event.key == pygame.K_DOWN:
-                paddle1.MovePaddle()
+
+            if event.key == pygame.K_UP:
+                paddle1.MovePaddle(False, False)
+
+            elif event.key == pygame.K_DOWN:
+                paddle1.MovePaddle(False, False)
 #render method
 def Render():
     window.fill((0, 0, 0))
