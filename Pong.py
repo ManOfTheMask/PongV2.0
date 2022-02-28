@@ -26,10 +26,21 @@ class Paddles:
     def RenderPaddle(self):
         # x, y, width, height
          pygame.draw.rect(window, (255, 255, 255), pygame.Rect(self.xcoord, self.ycoord, self.width, self.height))
+
+    def MovePaddle(self, PaddleUp=False, PaddleDown=False):
+        # control the paddles
+        if PaddleUp:
+            self.ycoord += 1
+        if PaddleDown:
+            self.ycoord -= 1
+        if self.ycoord > ScreenHeight - 50:
+            self.ycoord = ScreenHeight - 50
+        if self.ycoord < 0:
+                self.ycoord = 0
         
 #create objects
-paddle1 = Paddles(100, 240, 10, 60)
-paddle2 = Paddles(565, 240, 10, 60)
+paddle1 = Paddles(50, 240, 10, 60)
+paddle2 = Paddles(500, 240, 10, 60)
 
 #event method
 def Events():
@@ -37,6 +48,19 @@ def Events():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             IsOpen = False
+    
+    # control the paddles
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                paddle1.MovePaddle(True)
+            if event.key == pygame.K_DOWN:
+                paddle1.MovePaddle(False, True)
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_UP :
+                paddle1.MovePaddle()
+            if event.key == pygame.K_DOWN:
+                paddle1.MovePaddle()
 #render method
 def Render():
     window.fill((0, 0, 0))
