@@ -1,4 +1,4 @@
-#TODO Fix movement
+#TODO Fix movement, add scoring, add ball and ball physics
 #note pygame local docs cmd python -m pygame.docs 
 import pygame
 
@@ -7,6 +7,8 @@ pygame.init()
 # global variables
 ScreenWidth = 640
 ScreenHeight = 480
+
+font = pygame.font.Font("ARCADECLASSIC.TTF", 100)
 
 IsOpen = True
 FPS = 200
@@ -27,13 +29,14 @@ class Paddles:
         # x, y, width, height
          pygame.draw.rect(window, (255, 255, 255), pygame.Rect(self.xcoord, self.ycoord, self.width, self.height))
 
-    def MovePaddle(self, PaddleUp, PaddleDown):
+    def MovePaddle(self, PaddleDown, PaddleUp):
         global IsOpen
         # control the paddles
-        if PaddleUp:
-            self.ycoord += 1
         if PaddleDown:
+            self.ycoord += 1
+        if PaddleUp:
             self.ycoord -= 1
+
         if self.ycoord > ScreenHeight - 50:
             self.ycoord = ScreenHeight - 50
         if self.ycoord < 0:
@@ -41,7 +44,7 @@ class Paddles:
         
 #create objects
 paddle1 = Paddles(50, 240, 10, 60)
-paddle2 = Paddles(500, 240, 10, 60)
+paddle2 = Paddles(560, 240, 10, 60)
 
 #event method
 def Events():
@@ -51,6 +54,7 @@ def Events():
             IsOpen = False
     # control the paddles
         if event.type == pygame.KEYDOWN:
+
             if event.key == pygame.K_UP:
                 paddle1.MovePaddle(False, True)
 
@@ -59,16 +63,16 @@ def Events():
 
         if event.type == pygame.KEYUP:
 
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                 paddle1.MovePaddle(False, False)
 
-            elif event.key == pygame.K_DOWN:
-                paddle1.MovePaddle(False, False)
 #render method
 def Render():
     window.fill((0, 0, 0))
     paddle1.RenderPaddle()
     paddle2.RenderPaddle()
+    window.blit(font.render("0", False, (255, 255, 255)), (ScreenWidth - 570, ScreenHeight - 420))
+    window.blit(font.render("0", False, (255, 255, 255)), (ScreenWidth - 130, ScreenHeight - 420))
     pygame.display.update()
 
 #game loop
