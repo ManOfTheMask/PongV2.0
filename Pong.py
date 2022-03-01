@@ -1,6 +1,5 @@
 #TODO add scoring, add ball physics, add collision
 #note pygame local docs cmd python -m pygame.docs 
-from turtle import ycor
 import pygame
 
 pygame.init()
