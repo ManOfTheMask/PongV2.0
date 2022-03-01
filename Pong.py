@@ -1,4 +1,4 @@
-#TODO Fix movement, add scoring, add ball and ball physics
+#TODO add scoring, add ball and ball physics
 #note pygame local docs cmd python -m pygame.docs 
 import pygame
 
@@ -11,8 +11,9 @@ ScreenHeight = 480
 font = pygame.font.Font("ARCADECLASSIC.TTF", 100)
 
 IsOpen = True
-FPS = 200
-
+FPS = 120
+KeyDown = False
+KeyUp = False
 
 window = pygame.display.set_mode((ScreenWidth, ScreenHeight))
 clock = pygame.time.Clock()
@@ -33,9 +34,9 @@ class Paddles:
         global IsOpen
         # control the paddles
         if PaddleDown:
-            self.ycoord += 1
+            self.ycoord += 3
         if PaddleUp:
-            self.ycoord -= 1
+            self.ycoord -= 3
 
         if self.ycoord > ScreenHeight - 50:
             self.ycoord = ScreenHeight - 50
@@ -48,23 +49,27 @@ paddle2 = Paddles(560, 240, 10, 60)
 
 #event method
 def Events():
-    global IsOpen
+    global IsOpen, KeyUp, KeyDown
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             IsOpen = False
-    # control the paddles
+        #control the paddles
         if event.type == pygame.KEYDOWN:
-
             if event.key == pygame.K_UP:
-                paddle1.MovePaddle(False, True)
-
+                KeyUp = True
             elif event.key == pygame.K_DOWN:
-                paddle1.MovePaddle(True, False)
+                KeyDown = True
 
         if event.type == pygame.KEYUP:
-
             if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                paddle1.MovePaddle(False, False)
+                KeyUp = False
+                KeyDown = False
+
+    #keeps the movment comtrols continuous 
+    if KeyUp:
+        paddle1.MovePaddle(False, True)
+    elif KeyDown:
+        paddle1.MovePaddle(True, False)
 
 #render method
 def Render():
