@@ -1,5 +1,6 @@
-#TODO add scoring, add ball and ball physics
+#TODO add scoring, add ball physics, add collision
 #note pygame local docs cmd python -m pygame.docs 
+from turtle import ycor
 import pygame
 
 pygame.init()
@@ -42,10 +43,20 @@ class Paddles:
             self.ycoord = ScreenHeight - 50
         if self.ycoord < 0:
             self.ycoord = 0
-        
+class Ball:
+    def __init__(self, xcoord, ycoord, radius):
+        self.xcoord = xcoord
+        self.ycoord = ycoord
+        self.radius = radius
+
+    def RenderBall(self):
+        #x, y radius
+        pygame.draw.circle(window, (255, 255, 255), [self.xcoord, self.ycoord], self.radius)
+
 #create objects
 paddle1 = Paddles(50, 240, 10, 60)
 paddle2 = Paddles(560, 240, 10, 60)
+ball = Ball(185, 135, 15)
 
 #event method
 def Events():
@@ -76,6 +87,7 @@ def Render():
     window.fill((0, 0, 0))
     paddle1.RenderPaddle()
     paddle2.RenderPaddle()
+    ball.RenderBall()
     window.blit(font.render("0", False, (255, 255, 255)), (ScreenWidth - 570, ScreenHeight - 420))
     window.blit(font.render("0", False, (255, 255, 255)), (ScreenWidth - 130, ScreenHeight - 420))
     pygame.display.update()
