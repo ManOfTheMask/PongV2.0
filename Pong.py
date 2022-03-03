@@ -1,4 +1,4 @@
-#TODO add scoring, add ball physics, add collision
+#TODO add scoring, add collision
 #note pygame local docs cmd python -m pygame.docs 
 import pygame
 
@@ -43,19 +43,36 @@ class Paddles:
         if self.ycoord < 0:
             self.ycoord = 0
 class Ball:
-    def __init__(self, xcoord, ycoord, radius):
+    def __init__(self, xcoord, ycoord, radius, moveleft, moveright, moveup, movedown, ballspeed):
         self.xcoord = xcoord
         self.ycoord = ycoord
         self.radius = radius
+        self.ballspeed = ballspeed
+        self.moveleft = moveleft
+        self.moveright = moveright
+        self.moveup =  moveup
+        self.movedown = movedown
 
     def RenderBall(self):
         #x, y radius
         pygame.draw.circle(window, (255, 255, 255), [self.xcoord, self.ycoord], self.radius)
 
+    def BallMovement(self):
+        if self.moveleft == True:
+            self.xcoord -= self.ballspeed
+        if self.moveright == True:
+            self.xcoord += self.ballspeed
+        if self.moveup == True:
+            self.ycoord += self.ballspeed
+        if self.movedown == True:
+            self.coord += self.ballspeed
 #create objects
 paddle1 = Paddles(50, 240, 10, 60)
 paddle2 = Paddles(560, 240, 10, 60)
-ball = Ball(185, 135, 15)
+
+#change the values to up = true and right = true until movement is implmented
+# xcoord, ycoord, size, move left, move right, move up, movedown
+ball = Ball(185, 135, 15, False, False, False, False, 1)
 
 #event method
 def Events():
@@ -81,6 +98,7 @@ def Events():
     elif KeyDown:
         paddle1.MovePaddle(True, False)
 
+    ball.BallMovement()
 #render method
 def Render():
     window.fill((0, 0, 0))
