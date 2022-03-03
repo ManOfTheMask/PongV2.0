@@ -56,6 +56,22 @@ class Ball:
     def RenderBall(self):
         #x, y radius
         pygame.draw.circle(window, (255, 255, 255), [self.xcoord, self.ycoord], self.radius)
+    def BallCollision(self):
+        global ScreenHeight, ScreenWidth
+        #bounces the ball up and down on the top and bottom of the screen
+        if self.ycoord >= ScreenHeight - self.radius:
+            self.moveup = True
+            self.movedown = False
+        if self.ycoord <= 0 + self.radius:
+            self.moveup = False
+            self.movedown = True
+        #bounces the ball left and right on the left and right of the screen
+        if self.xcoord >= ScreenWidth - self.radius:
+            self.moveright = False
+            self.moveleft = True
+        if self.xcoord <= 0 + self.radius:
+            self.moveright = True
+            self.moveleft = False
 
     def BallMovement(self):
         if self.moveleft == True:
@@ -63,16 +79,17 @@ class Ball:
         if self.moveright == True:
             self.xcoord += self.ballspeed
         if self.moveup == True:
-            self.ycoord += self.ballspeed
+            self.ycoord -= self.ballspeed
         if self.movedown == True:
-            self.coord += self.ballspeed
+            self.ycoord += self.ballspeed
+
 #create objects
 paddle1 = Paddles(50, 240, 10, 60)
 paddle2 = Paddles(560, 240, 10, 60)
 
 #change the values to up = true and right = true until movement is implmented
-# xcoord, ycoord, size, move left, move right, move up, movedown
-ball = Ball(185, 135, 15, False, False, False, False, 1)
+# xcoord, ycoord, size, move left, move right, move up, movedown, ballspeed
+ball = Ball(185, 135, 15, False, True, True, False, 1)
 
 #event method
 def Events():
@@ -98,7 +115,9 @@ def Events():
     elif KeyDown:
         paddle1.MovePaddle(True, False)
 
-    ball.BallMovement()
+   
+    
+    
 #render method
 def Render():
     window.fill((0, 0, 0))
@@ -111,7 +130,9 @@ def Render():
 
 #game loop
 while IsOpen:
-    clock.tick(FPS)
+    clock.tick(FPS) 
+    ball.BallCollision()
+    ball.BallMovement()
     Events()
     Render()
 pygame.quit()
