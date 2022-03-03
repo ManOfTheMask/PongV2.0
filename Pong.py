@@ -43,46 +43,47 @@ class Paddles:
         if self.ycoord < 0:
             self.ycoord = 0
 class Ball:
-    def __init__(self, xcoord, ycoord, radius, moveleft, moveright, moveup, movedown, ballspeed):
-        self.xcoord = xcoord
-        self.ycoord = ycoord
-        self.radius = radius
+    def __init__(self, ballxcoord, ballycoord, ballradius, moveleft, moveright, moveup, movedown, ballspeed):
+        self.ballxcoord = ballxcoord
+        self.ballycoord = ballycoord
+        self.ballradius = ballradius
         self.ballspeed = ballspeed
         self.moveleft = moveleft
         self.moveright = moveright
         self.moveup =  moveup
         self.movedown = movedown
+            
 
     def RenderBall(self):
         #x, y radius
-        pygame.draw.circle(window, (255, 255, 255), [self.xcoord, self.ycoord], self.radius)
+        pygame.draw.circle(window, (255, 255, 255), [self.ballxcoord, self.ballycoord], self.ballradius)
     def BallCollision(self):
         global ScreenHeight, ScreenWidth
         #bounces the ball up and down on the top and bottom of the screen
-        if self.ycoord >= ScreenHeight - self.radius:
+        if self.ballycoord >= ScreenHeight - self.ballradius:
             self.moveup = True
             self.movedown = False
-        if self.ycoord <= 0 + self.radius:
+        if self.ballycoord <= 0 + self.ballradius:
             self.moveup = False
             self.movedown = True
         #bounces the ball left and right on the left and right of the screen
-        if self.xcoord >= ScreenWidth - self.radius:
+        if self.ballxcoord >= ScreenWidth - self.ballradius:
             self.moveright = False
             self.moveleft = True
-        if self.xcoord <= 0 + self.radius:
+        if self.ballxcoord <= 0 + self.ballradius:
             self.moveright = True
             self.moveleft = False
-
+        
     def BallMovement(self):
         #makes the ball move
         if self.moveleft == True:
-            self.xcoord -= self.ballspeed
+            self.ballxcoord -= self.ballspeed
         if self.moveright == True:
-            self.xcoord += self.ballspeed
+            self.ballxcoord += self.ballspeed
         if self.moveup == True:
-            self.ycoord -= self.ballspeed
+            self.ballycoord -= self.ballspeed
         if self.movedown == True:
-            self.ycoord += self.ballspeed
+            self.ballycoord += self.ballspeed
 
 #create objects
 paddle1 = Paddles(50, 240, 10, 60)
