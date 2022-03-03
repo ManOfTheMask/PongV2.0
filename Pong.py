@@ -115,7 +115,8 @@ def Events():
     elif KeyDown:
         paddle1.MovePaddle(True, False)
 
-   
+    ball.BallCollision()
+    ball.BallMovement()
     
     
 #render method
@@ -131,8 +132,7 @@ def Render():
 #game loop
 while IsOpen:
     clock.tick(FPS) 
-    ball.BallCollision()
-    ball.BallMovement()
+    
     Events()
     Render()
 pygame.quit()
