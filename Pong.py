@@ -1,4 +1,4 @@
-#TODO add scoring, add collision
+#TODO add scoring, add collision, add bot controls
 #note pygame local docs cmd python -m pygame.docs 
 import pygame
 
@@ -43,53 +43,66 @@ class Paddles:
         if self.ycoord < 0:
             self.ycoord = 0
 class Ball:
-    def __init__(self, ballxcoord, ballycoord, ballradius, moveleft, moveright, moveup, movedown, ballspeed):
-        self.ballxcoord = ballxcoord
-        self.ballycoord = ballycoord
-        self.ballradius = ballradius
+    def __init__(self, xcoord, ycoord, radius, moveleft, moveright, moveup, movedown, ballspeed):
+        self.xcoord = xcoord
+        self.ycoord = ycoord
+        self.radius = radius
         self.ballspeed = ballspeed
         self.moveleft = moveleft
         self.moveright = moveright
         self.moveup =  moveup
         self.movedown = movedown
-            
+        
 
     def RenderBall(self):
         #x, y radius
-        pygame.draw.circle(window, (255, 255, 255), [self.ballxcoord, self.ballycoord], self.ballradius)
+        pygame.draw.circle(window, (255, 255, 255), [self.xcoord, self.ycoord], self.radius)
+
     def BallCollision(self):
         global ScreenHeight, ScreenWidth
         #bounces the ball up and down on the top and bottom of the screen
-        if self.ballycoord >= ScreenHeight - self.ballradius:
+        if self.ycoord >= ScreenHeight - self.radius:
             self.moveup = True
             self.movedown = False
-        if self.ballycoord <= 0 + self.ballradius:
+        if self.ycoord <= 0 + self.radius:
             self.moveup = False
             self.movedown = True
         #bounces the ball left and right on the left and right of the screen
-        if self.ballxcoord >= ScreenWidth - self.ballradius:
+        if self.xcoord >= ScreenWidth - self.radius:
             self.moveright = False
             self.moveleft = True
-        if self.ballxcoord <= 0 + self.ballradius:
+        if self.xcoord <= 0 + self.radius:
             self.moveright = True
             self.moveleft = False
         
     def BallMovement(self):
         #makes the ball move
         if self.moveleft == True:
-            self.ballxcoord -= self.ballspeed
+            self.xcoord -= self.ballspeed
         if self.moveright == True:
-            self.ballxcoord += self.ballspeed
+            self.xcoord += self.ballspeed
         if self.moveup == True:
-            self.ballycoord -= self.ballspeed
+            self.ycoord -= self.ballspeed
         if self.movedown == True:
-            self.ballycoord += self.ballspeed
+            self.ycoord += self.ballspeed
 
 #create objects
 paddle1 = Paddles(50, 240, 10, 60)
 paddle2 = Paddles(560, 240, 10, 60)
 # xcoord, ycoord, size, move left, move right, move up, movedown, ballspeed
 ball = Ball(185, 135, 15, False, True, True, False, 1)
+
+def PaddleBallCollsion():
+    #collision for the paddle on the right
+    if ball.xcoord + ball.radius >= paddle2.xcoord:
+        if paddle2.ycoord + paddle2.height >= ball.ycoord > paddle2.ycoord:
+            ball.moveright = False
+            ball.moveleft = True
+    #collision for the paddle on the left
+    if ball.xcoord - ball.radius <= paddle1.xcoord:
+        if paddle1.ycoord + paddle1.height >= ball.ycoord > paddle1.ycoord:
+            ball.moveright = True
+            ball.moveleft = False
 
 #event method
 def Events():
@@ -116,9 +129,9 @@ def Events():
     elif KeyDown:
         paddle1.MovePaddle(True, False)
 
-
     ball.BallCollision()
     ball.BallMovement()
+    PaddleBallCollsion()
     
     
 #render method
