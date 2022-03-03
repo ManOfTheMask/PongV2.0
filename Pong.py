@@ -37,7 +37,7 @@ class Paddles:
             self.ycoord += 3
         if PaddleUp:
             self.ycoord -= 3
-
+        #collision for the paddles
         if self.ycoord > ScreenHeight - 50:
             self.ycoord = ScreenHeight - 50
         if self.ycoord < 0:
@@ -74,6 +74,7 @@ class Ball:
             self.moveleft = False
 
     def BallMovement(self):
+        #makes the ball move
         if self.moveleft == True:
             self.xcoord -= self.ballspeed
         if self.moveright == True:
@@ -86,8 +87,6 @@ class Ball:
 #create objects
 paddle1 = Paddles(50, 240, 10, 60)
 paddle2 = Paddles(560, 240, 10, 60)
-
-#change the values to up = true and right = true until movement is implmented
 # xcoord, ycoord, size, move left, move right, move up, movedown, ballspeed
 ball = Ball(185, 135, 15, False, True, True, False, 1)
 
@@ -97,6 +96,7 @@ def Events():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             IsOpen = False
+
         #control the paddles
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
@@ -115,24 +115,29 @@ def Events():
     elif KeyDown:
         paddle1.MovePaddle(True, False)
 
+
     ball.BallCollision()
     ball.BallMovement()
     
     
 #render method
 def Render():
+    #window color
     window.fill((0, 0, 0))
+    #renders paddles
     paddle1.RenderPaddle()
     paddle2.RenderPaddle()
+    #renders ball
     ball.RenderBall()
+    #renders the score numbers
     window.blit(font.render("0", False, (255, 255, 255)), (ScreenWidth - 570, ScreenHeight - 420))
     window.blit(font.render("0", False, (255, 255, 255)), (ScreenWidth - 130, ScreenHeight - 420))
+    #updates the display
     pygame.display.update()
 
 #game loop
 while IsOpen:
     clock.tick(FPS) 
-    
     Events()
     Render()
 pygame.quit()
