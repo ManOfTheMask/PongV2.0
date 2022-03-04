@@ -1,4 +1,3 @@
-#TODO add scoring, add collision, add bot controls
 #note pygame local docs cmd python -m pygame.docs 
 import pygame
 
@@ -14,6 +13,8 @@ IsOpen = True
 FPS = 120
 KeyDown = False
 KeyUp = False
+PlayerScore = 0
+ComputerScore = 0
 
 window = pygame.display.set_mode((ScreenWidth, ScreenHeight))
 clock = pygame.time.Clock()
@@ -35,13 +36,20 @@ class Paddles:
         # control the paddles
         if PaddleDown:
             self.ycoord += 3
-        if PaddleUp:
+        elif PaddleUp:
             self.ycoord -= 3
         #collision for the paddles
-        if self.ycoord > ScreenHeight - 50:
+        elif self.ycoord > ScreenHeight - 50:
             self.ycoord = ScreenHeight - 50
-        if self.ycoord < 0:
+        elif self.ycoord < 0:
             self.ycoord = 0
+
+    def ComputerMovement(self):
+        if ball.ycoord - ball.radius <= self.ycoord:
+            self.ycoord -= 2
+        elif ball.ycoord + ball.radius >= self.ycoord:
+            self.ycoord += 2
+
 class Ball:
     def __init__(self, xcoord, ycoord, radius, moveleft, moveright, moveup, movedown, ballspeed):
         self.xcoord = xcoord
@@ -64,14 +72,14 @@ class Ball:
         if self.ycoord >= ScreenHeight - self.radius:
             self.moveup = True
             self.movedown = False
-        if self.ycoord <= 0 + self.radius:
+        elif self.ycoord <= 0 + self.radius:
             self.moveup = False
             self.movedown = True
         #bounces the ball left and right on the left and right of the screen
         if self.xcoord >= ScreenWidth - self.radius:
             self.moveright = False
             self.moveleft = True
-        if self.xcoord <= 0 + self.radius:
+        elif self.xcoord <= 0 + self.radius:
             self.moveright = True
             self.moveleft = False
         
@@ -86,12 +94,29 @@ class Ball:
         if self.movedown == True:
             self.ycoord += self.ballspeed
 
-#create objects
-paddle1 = Paddles(50, 240, 10, 60)
-paddle2 = Paddles(560, 240, 10, 60)
-# xcoord, ycoord, size, move left, move right, move up, movedown, ballspeed
-ball = Ball(185, 135, 15, False, True, True, False, 1)
+    def Scoring(self):
+        global PlayerScore, ComputerScore, ScreenWidth
+        #checks for score and resets ball
+        def resetmovement():
+            self.moveleft = False
+            self.moveright = True
+            self.moveup = True
+            self.movedown = False
 
+        if self.xcoord - self.radius== 10:
+            PlayerScore += 1
+            self.xcoord = 185
+            self.ycoord = 135
+            resetmovement()
+
+        if self.xcoord + self.radius == ScreenWidth - 10:
+            int(ComputerScore)
+            ComputerScore += 1
+            self.xcoord = 185
+            self.ycoord = 135
+            resetmovement()
+
+            
 def PaddleBallCollsion():
     #collision for the paddle on the right
     if ball.xcoord + ball.radius >= paddle2.xcoord:
@@ -99,10 +124,16 @@ def PaddleBallCollsion():
             ball.moveright = False
             ball.moveleft = True
     #collision for the paddle on the left
-    if ball.xcoord - ball.radius <= paddle1.xcoord:
+    elif ball.xcoord - ball.radius <= paddle1.xcoord:
         if paddle1.ycoord + paddle1.height >= ball.ycoord > paddle1.ycoord:
             ball.moveright = True
             ball.moveleft = False
+
+#create objects
+paddle1 = Paddles(50, 240, 10, 60)
+paddle2 = Paddles(560, 240, 10, 60)
+# xcoord, ycoord, size, move left, move right, move up, movedown, ballspeed
+ball = Ball(185, 135, 15, False, True, True, False, 2)
 
 #event method
 def Events():
@@ -118,7 +149,7 @@ def Events():
             elif event.key == pygame.K_DOWN:
                 KeyDown = True
 
-        if event.type == pygame.KEYUP:
+        elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                 KeyUp = False
                 KeyDown = False
@@ -130,7 +161,9 @@ def Events():
         paddle1.MovePaddle(True, False)
 
     ball.BallCollision()
+    ball.Scoring()
     ball.BallMovement()
+    paddle2.ComputerMovement()
     PaddleBallCollsion()
     
     
@@ -144,14 +177,14 @@ def Render():
     #renders ball
     ball.RenderBall()
     #renders the score numbers
-    window.blit(font.render("0", False, (255, 255, 255)), (ScreenWidth - 570, ScreenHeight - 420))
-    window.blit(font.render("0", False, (255, 255, 255)), (ScreenWidth - 130, ScreenHeight - 420))
+    window.blit(font.render(str(PlayerScore), False, (255, 255, 255)), (ScreenWidth - 570, ScreenHeight - 420))
+    window.blit(font.render(str(ComputerScore), False, (255, 255, 255)), (ScreenWidth - 130, ScreenHeight - 420))
     #updates the display
     pygame.display.update()
 
 #game loop
 while IsOpen:
-    clock.tick(FPS) 
+    clock.tick(FPS)
     Events()
     Render()
 pygame.quit()
